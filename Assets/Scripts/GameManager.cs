@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Party")]
     public List<CharacterSaveData> party = new List<CharacterSaveData>();
-    public List<string> inventory = new List<string>();
+    public List<ItemInstance> inventory = new List<ItemInstance>();
+    
 
     [Header("Corruption")]
     public int corruptionTicks = 0;

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class TavernManager : MonoBehaviour
 {
@@ -24,16 +25,35 @@ public class TavernManager : MonoBehaviour
         { 
             ClassData randomClass = availableClasses[Random.Range(0, availableClasses.Length)];
 
-            // create a character with randomized stats
             CharacterStats stats = EntityFactory.CreateCharacter(randomClass, characterPrefab, nameDatabase);
-            stats.gameObject.SetActive(false); // hide until hired
+            stats.gameObject.SetActive(false); 
 
-            // spawn a recruit card
             GameObject cardObj = Instantiate(recruitCardPrefab, recruitsPanel);
             RecruitCard card = cardObj.GetComponent<RecruitCard>();
             card.Setup(stats);
 
+            CharacterStats capturedStats = stats;
+            GameObject capturedCard = cardObj;
+
+            Button hireButton = cardObj.transform.Find("ButtonsPanel/HireButton").GetComponent<Button>();
+            hireButton.onClick.AddListener(() => HireRecruit(capturedStats, capturedCard));
 
         }
+
+    }
+
+    void HireRecruit(CharacterStats stats, GameObject card)
+    {
+        if(GameManager.instance.party.Count >= 4)
+        {
+            return;
+        }
+
+        GameManager.instance.party.Add(stats.ToSaveData());
+
+        CanvasGroup cg = card.GetComponent<CanvasGroup>();
+        cg.alpha = 0;
+        cg.interactable = false;
+        cg.blocksRaycasts = false;
     }
 }

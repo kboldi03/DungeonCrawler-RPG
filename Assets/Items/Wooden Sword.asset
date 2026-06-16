@@ -17,4 +17,5 @@ MonoBehaviour:
   description: A wooden sword for training
   modifiers:
   - stat: 1
-    value: 2
+    minValue: 1
+    maxValue: 4

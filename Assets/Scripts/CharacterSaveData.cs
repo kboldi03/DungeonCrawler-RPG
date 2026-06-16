@@ -19,7 +19,7 @@ public class CharacterSaveData
     public int currentXP;
     public int xpToNextLevel;
 
-    public string equippedItemName;
+    public ItemInstance equippedItem;
 
     /*
     public int permAttack;

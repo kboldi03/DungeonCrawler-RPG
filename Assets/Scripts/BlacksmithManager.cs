@@ -10,7 +10,7 @@ public class BlacksmithManager : MonoBehaviour
     public GameObject itemCardPrefab;
 
     [Header("Items")]
-    public ItemData[] allItems;
+    public List<ItemData> allItems = new List<ItemData>();
 
     private List<GameObject> itemCards = new List<GameObject>();
 
@@ -21,41 +21,57 @@ public class BlacksmithManager : MonoBehaviour
 
     void GenerateItems()
     {
-        List<ItemData> available = new List<ItemData>(allItems);
-        int count = Mathf.Min(3, available.Count);
+        
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < 3; i++)
         {
-            int randomIndex = Random.Range(0, available.Count);
-            ItemData item = available[randomIndex];
-            available.RemoveAt(randomIndex);
+            int randomIndex = Random.Range(0, allItems.Count);
+            ItemData item = allItems[randomIndex];
+
+            ItemInstance instance = RollItem(item);
 
             GameObject card = Instantiate(itemCardPrefab, itemPanel);
             itemCards.Add(card);
 
             card.transform.Find("Icon").GetComponent<Image>().sprite = item.icon;
             card.transform.Find("Name").GetComponent<TMP_Text>().text = item.itemName;
-            card.transform.Find("Stats").GetComponent<TMP_Text>().text = BuildStatsText(item);
+            card.transform.Find("Stats").GetComponent<TMP_Text>().text = BuildStatsText(instance);
 
-            ItemData captured = item;
-            card.GetComponentInChildren<Button>().onClick.AddListener(() => BuyItem(captured, card));
+            card.GetComponentInChildren<Button>().onClick.AddListener(() => BuyItem(instance, card));
         }
     }
 
-    string BuildStatsText(ItemData item)
+    ItemInstance RollItem(ItemData template)
+    {
+        ItemInstance instance = new ItemInstance();
+        instance.itemName = template.itemName;
+
+        foreach(StatModifier mod  in template.modifiers)
+        {
+            RolledModifier rolled = new RolledModifier();
+            rolled.stat = mod.stat;
+            rolled.value = Random.Range(mod.minValue, mod.maxValue+1);
+            instance.rolledModifiers.Add(rolled);
+        }
+        return instance;
+    }
+
+    string BuildStatsText(ItemInstance instance)
     {
         string text = "";
-        foreach (StatModifier mod in item.modifiers)
+        foreach (RolledModifier mod in instance.rolledModifiers)
         {
+            
             string sign = mod.value >= 0 ? "+" : "";
             text += mod.stat + ": " + sign + mod.value + "\n";
+            
         }
         return text.TrimEnd();
     }
 
-    void BuyItem(ItemData item, GameObject card)
+    void BuyItem(ItemInstance instance, GameObject card)
     {
-        GameManager.instance.inventory.Add(item.itemName);
+        GameManager.instance.inventory.Add(instance);
         card.transform.localScale = Vector3.zero;
     }
 }

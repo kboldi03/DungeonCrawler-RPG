@@ -2,12 +2,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 
 public class BaracksManager : MonoBehaviour
 {
     [Header("Party Panel")]
     public Transform partyPanel;
     public GameObject partyIconPrefab;
+
+    [Header("Inventory Panel")]
+    public GameObject inventoryPanel;
+    public Transform equippedItemContainer;
+    public Transform inventoryListContent;
+    public GameObject itemCardPrefab;
+    public Button closeInventoryButton;
+    public Button itemSlotButton;
+
+    private CharacterSaveData selectedCharacter;
+    private List<GameObject> equippedCards = new List<GameObject>();
+    private List<GameObject> inventoryCards = new List<GameObject>();
 
     [Header("Display Panel")]
     public GameObject displayPanel;
@@ -31,6 +44,13 @@ public class BaracksManager : MonoBehaviour
     {
         
         displayPanel.SetActive(false);
+        inventoryPanel.SetActive(false);
+        itemNameText.text = "No item equpped";
+        itemIcon.sprite = null;
+
+        itemSlotButton.onClick.AddListener(OpenInventory);
+        closeInventoryButton.onClick.AddListener(() => inventoryPanel.SetActive(false));
+
         SpawnPartyIcons();
     }
 
@@ -55,6 +75,7 @@ public class BaracksManager : MonoBehaviour
 
     void ShowMember(CharacterSaveData data)
     {
+        selectedCharacter = data;
         displayPanel.SetActive(true);
 
         ClassData classData = FindClassData(data.className);
@@ -117,11 +138,15 @@ public class BaracksManager : MonoBehaviour
                 }
             }
         }
+        ItemInstance equippedItem = data.equippedItem;
 
-        ItemData equippedItem = FindItem(data.equippedItemName);
+        
         if (equippedItem != null)
         {
-            itemIcon.sprite = equippedItem.icon;
+            ItemData itemData = FindItem(data.equippedItem.itemName);
+            if(itemData != null)
+                itemIcon.sprite = itemData.icon;
+
             itemNameText.text = equippedItem.itemName;
         }
         else
@@ -151,5 +176,84 @@ public class BaracksManager : MonoBehaviour
             if (classData.className == className)
                 return classData;
         return null;
+    }
+
+    void OpenInventory()
+    {
+        inventoryPanel.SetActive(true);
+        RefreshInventoryDisplay();
+    }
+
+    void RefreshInventoryDisplay()
+    {
+        foreach(GameObject card in equippedCards)
+            Destroy(card);
+        equippedCards.Clear();
+        foreach(GameObject card in inventoryCards) 
+            Destroy(card);
+        inventoryCards.Clear();
+
+        if(selectedCharacter.equippedItem != null)
+        {
+            GameObject card  = CreateItemCard(selectedCharacter.equippedItem, equippedItemContainer);
+            card.GetComponentInChildren<Button>().GetComponentInChildren<TMP_Text>().text = "Remove";
+            card.GetComponentInChildren<Button>().onClick.AddListener(() => RemoveEquippedItem());
+            equippedCards.Add(card);
+        }
+        foreach (ItemInstance item in GameManager.instance.inventory)
+        {
+            GameObject card = CreateItemCard(item, inventoryListContent);
+            card.GetComponentInChildren<Button>().GetComponentInChildren<TMP_Text>().text = "Equip";
+            ItemInstance captured = item;
+            card.GetComponentInChildren<Button>().onClick.AddListener(() => EquipItem(captured));
+            inventoryCards.Add(card);
+        }
+    }
+
+    GameObject CreateItemCard(ItemInstance instance, Transform parent)
+    {
+        GameObject card = Instantiate(itemCardPrefab, parent);
+
+        ItemData itemData = FindItem(instance.itemName);
+        if (itemData != null)
+            card.transform.Find("Icon").GetComponent<Image>().sprite = itemData.icon;
+
+        card.transform.Find("Name").GetComponent<TMP_Text>().text = instance.itemName;
+        card.transform.Find("Stats").GetComponent<TMP_Text>().text = BuildStatsText(instance);
+
+        return card;
+    }
+
+    string BuildStatsText(ItemInstance instance)
+    {
+        string text = "";
+        foreach(RolledModifier mod in instance.rolledModifiers)
+        {
+            string sign = mod.value >= 0 ? "+" : "";
+            text += mod.stat + ": " + sign + mod.value + "\n";
+        }
+        return text.TrimEnd();
+    }
+
+    void EquipItem(ItemInstance newItem)
+    {
+        if (selectedCharacter.equippedItem != null)
+        {
+            GameManager.instance.inventory.Add(selectedCharacter.equippedItem);
+        }
+        selectedCharacter.equippedItem = newItem;
+        GameManager.instance.inventory.Remove(newItem);
+
+        RefreshInventoryDisplay();
+        ShowMember(selectedCharacter);
+    }
+
+    void RemoveEquippedItem()
+    {
+        GameManager.instance.inventory.Add(selectedCharacter.equippedItem);
+        selectedCharacter.equippedItem = null;
+
+        RefreshInventoryDisplay();
+        ShowMember(selectedCharacter);
     }
 }

@@ -16,13 +16,10 @@ public class RecruitCard : MonoBehaviour
     public GameObject frontFace;
     public GameObject backFace;
 
-    private CharacterStats recruitStats;
     private bool isFlipped = false;
 
     public void Setup(CharacterStats stats)
     {
-        recruitStats = stats;
-
         nameText.text = stats.characterName;
         classText.text = stats.classData.className;
         characterSprite.sprite = stats.classData.sprite;
@@ -44,21 +41,5 @@ public class RecruitCard : MonoBehaviour
         isFlipped = !isFlipped;
         frontFace.SetActive(!isFlipped);
         backFace.SetActive(isFlipped);
-    }
-
-    public void OnHireClicked()
-    {
-
-        if (GameManager.instance.party.Count >= 4)
-        {
-            Debug.Log("Party is full");
-            return;
-        }
-        GameManager.instance.party.Add(recruitStats.ToSaveData());
-        CanvasGroup cg = GetComponent<CanvasGroup>();
-        cg.alpha = 0;
-        cg.interactable = false;
-        cg.blocksRaycasts = false;
-
     }
 }

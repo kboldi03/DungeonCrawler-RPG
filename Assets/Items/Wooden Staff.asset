@@ -17,4 +17,5 @@ MonoBehaviour:
   description: A wooden staff for acolytes
   modifiers:
   - stat: 2
-    value: 3
+    minValue: 1
+    maxValue: 4

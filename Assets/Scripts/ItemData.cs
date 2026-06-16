@@ -5,7 +5,8 @@ using UnityEngine;
 public class StatModifier
 {
     public StatType stat;
-    public int value;
+    public int minValue;
+    public int maxValue;
 }
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "Game/Item")]

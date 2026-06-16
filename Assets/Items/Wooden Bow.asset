@@ -17,4 +17,5 @@ MonoBehaviour:
   description: A wooden bow for training
   modifiers:
   - stat: 1
-    value: 4
+    minValue: 2
+    maxValue: 6

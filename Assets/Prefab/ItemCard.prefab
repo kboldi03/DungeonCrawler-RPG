@@ -681,19 +681,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6806185033668899983}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2885813673688911129}
-        m_TargetAssemblyTypeName: RecruitCard, Assembly-CSharp
-        m_MethodName: OnHireClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &8193524273184741204
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,6 +693,7 @@ GameObject:
   - component: {fileID: 3312546766603636655}
   - component: {fileID: 2885813673688911129}
   - component: {fileID: 6537189592415357634}
+  - component: {fileID: 3033155298774905491}
   m_Layer: 5
   m_Name: ItemCard
   m_TagString: Untagged
@@ -766,3 +755,23 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &3033155298774905491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8193524273184741204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: 200
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
