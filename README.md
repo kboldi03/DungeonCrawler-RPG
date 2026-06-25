@@ -1,46 +1,136 @@
-# Dungeon RPG — Combat System Prototype
+## 🎮 Gameplay Demo
 
-A turn-based dungeon RPG built in Unity, currently in active development. This repository showcases the core combat and data architecture systems.
+Recommended watch: 1-minute full gameplay loop (town → recruitment → combat)
 
-## 🎮 Demo
+📽️ https://youtu.be/8anRH5H328M
 
+# DungeonCrawler-RPG
 
-<!-- Add your video/gif here -->
+A solo-developed turn-based dungeon crawler RPG built in Unity and C#. The project focuses on scalable, data-driven gameplay systems and modular RPG architecture.
 
-## 🛠️ Systems Built
+---
 
-### Data-Driven Architecture
-All game entities are defined as ScriptableObjects — classes, enemies, and skills are created as assets in the editor without touching code. This makes balancing and adding new content straightforward.
+## 🎮 Overview
 
-### Entity Factory
-Characters and enemies are spawned at runtime with randomized stats within class-defined ranges. Party members keep their recruited stats permanently while enemies scale per encounter type.
+A solo-developed turn-based RPG focusing on system-driven gameplay rather than content-heavy design.
+
+Players manage a party of procedurally generated adventurers, equip them through shops, and progress through increasingly dangerous dungeon encounters with permanent death mechanics.
+
+The project emphasizes modular architecture, data-driven design, and scalable gameplay systems built in Unity and C#.
+
+---
+
+## 🧩 Core Systems
 
 ### Combat System
-- Speed-based turn order — all combatants sorted by speed at combat start
-- Physical and magical damage types with separate armor and resistance stats
-- Armor penetration and magic penetration as flat stat values
-- Critical hits at 1.7x multiplier based on crit stat
-- Permadeath — defeated party members are permanently removed
-- AoE and single target skill support
+
+* Speed-based turn order (initiative resolved at battle start)
+* Physical and magical damage pipelines with separate mitigation (armor / resistance)
+* Flat armor and magic penetration mechanics
+* Critical hit system (scaled multiplier)
+* Single-target and AoE skill support
+* Permanent death for defeated party members
+
+---
 
 ### Skill System
-Skills are ScriptableObjects with configurable damage type, target type and damage multiplier. Each class tier unlocks additional skills — base class has 1, advanced has 2, master has 3.
 
-### Class Evolution System (in progress)
-Three base classes — Warrior, Archer, Mage — each with branching evolution paths at level thresholds.
+* ScriptableObject-based skill definitions
+* Configurable damage type, targeting rules, and scaling
+* Class-based skill progression (tiered unlock system)
+* Fully data-driven and extensible design
 
-## 🗺️ Planned Features
-- 20-floor dungeon with corruption mechanic — cleared floors reclaim over time based on player movement
-- Tavern recruitment with randomized recruits scaling to camp floor depth
-- Full class evolution trees for Warrior, Archer and Mage
-- Permadeath party management — replace fallen members at tavern
-- Floor-themed enemy encounters with boss fights
-- Building system on cleared floors (smithy, camp, shrine)
-- Race system with innate abilities (Elf, Dwarf, Halfling, Human)
+---
 
-## 🔧 Built With
-- Unity 2D
-- C#
+### Character & Recruitment System
+
+* Procedural adventurer generation in tavern
+* Class-based stat ranges and randomization
+* Persistent recruited character data
+* Permadeath-driven roster management
+
+---
+
+### Item & Equipment System
+
+- Procedural item generation (rarity/stat variation)
+- Equipment slots system (in progress)
+- Blacksmith shop for item purchasing (implemented)
+- Inventory management (in progress)
+
+---
+
+### Town Management System
+
+* Tavern (recruitment system)
+* Blacksmith (item shop / gear progression)
+* Barracks (party and equipment management)
+* Central navigation hub for game flow
+
+---
+
+## 🧠 Technical Highlights
+
+### Data-Driven Architecture
+
+All game content (classes, enemies, skills, items) is defined using ScriptableObjects. This allows balancing and content expansion without modifying gameplay code.
+
+### Runtime Entity System
+
+Characters and enemies are generated at runtime using class-based templates with randomized stat distribution. Enemy scaling adapts based on encounter context.
+
+### Modular Combat Architecture
+
+Combat is fully system-driven and decoupled from presentation, enabling easy extension for new mechanics such as status effects, abilities, or AI behaviors.
+
+---
+
+## 👥 Current Classes
+
+* Warrior
+* Archer
+* Mage
+
+---
+
+## 🚧 Planned Features
+
+* Class evolution trees with branching paths
+* Race system with passive traits
+* Multi-floor dungeon progression system
+* Boss encounters with unique mechanics
+* Town building / upgrade systems
+* Extended save/load system improvements
+
+---
+
+## 🛠️ Built With
+
+* Unity (2D)
+* C#
+* ScriptableObjects
+* Object-Oriented Design
+* Data-Driven Architecture
+
+---
 
 ## 📸 Screenshots
-Combat system in action<img width="917" height="513" alt="gamepick" src="https://github.com/user-attachments/assets/dca04088-92f0-40aa-8edc-7a56ebd50a3f" />
+The following screenshots show the main gameplay loop and implemented systems in action.
+
+### Combat encounter (turn order + skills)
+<img width="860" height="480" alt="Combat" src="https://github.com/user-attachments/assets/45954325-0ec7-4e80-9ede-3c7b804eb012" />
+
+### Tavern recruitment (procedural units)
+<img width="857" height="481" alt="Tavern" src="https://github.com/user-attachments/assets/28e37de8-cdc4-4152-bb2d-f3710bd06b1a" />
+
+### Barracks (party management & equipment)
+<img width="857" height="477" alt="Barracks" src="https://github.com/user-attachments/assets/05434be0-67e3-4395-99b5-d75fb5662a2e" />
+
+### Blacksmith (item shop system)
+<img width="857" height="480" alt="Blacksmith" src="https://github.com/user-attachments/assets/03ee2b2e-3ebe-4aa2-a3a9-cd202d5167b0" />
+
+---
+
+## 🎯 Status
+
+This project is in active development. Core gameplay systems are implemented and being expanded with progression, class evolution, and additional dungeon content.
