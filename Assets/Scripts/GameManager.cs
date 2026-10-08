@@ -1,12 +1,19 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
     [Header("Party")]
-    public List<CharacterStats> party = new List<CharacterStats>();
+    public List<CharacterSaveData> party = new List<CharacterSaveData>();
+    public List<ItemInstance> inventory = new List<ItemInstance>();
+    
+
+    [Header("Corruption")]
+    public int corruptionTicks = 0;
+    public int[] floorCorruptionLimits;
 
     [Header("Dungeon")]
     public int currentFloor = 1;
@@ -22,5 +29,10 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void LoadScene(string scene)
+    {
+        SceneManager.LoadScene(scene);
     }
 }

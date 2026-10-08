@@ -7,9 +7,6 @@ public class CharacterStats : MonoBehaviour
     public string characterName;
     public ClassData classData;
 
-    [Header("UI")]
-    public GameObject turnArrow;
-
     [Header("Enemy Data")]
     public int xpReward;
     public bool usesMagic;
@@ -31,6 +28,7 @@ public class CharacterStats : MonoBehaviour
     public int currentXP = 0;
     public int xpToNextLevel = 100;
 
+    /*
     [Header("Permanent Bonuses")]
     public int permAttack;
     public int permMagic;
@@ -38,11 +36,11 @@ public class CharacterStats : MonoBehaviour
     public int permResistance;
     public int permSpeed;
     public int permCrit;
-
+    */
     public void GainXP(int amount)
     {
         currentXP += amount;
-        if(currentXP >= xpToNextLevel)
+        while(currentXP >= xpToNextLevel)
         {
             LevelUp();
         }
@@ -116,5 +114,36 @@ public class CharacterStats : MonoBehaviour
             return Mathf.RoundToInt(baseDamage * 1.7f);
         }
         return baseDamage;
+    }
+
+    public CharacterSaveData ToSaveData()
+    {
+        CharacterSaveData data = new CharacterSaveData();
+        data.characterName = characterName;
+        data.className = classData != null ? classData.className : "";
+        data.maxHP = maxHP;
+        data.currentHP = currentHP;
+        data.attack = attack;
+        data.magic = magic;
+        data.armor = armor;
+        data.resistance = resistance;
+        data.speed = speed;
+        data.armorPen = armorPen;
+        data.magicPen = magicPen;
+        data.crit = crit;
+        data.level = level;
+        data.currentXP = currentXP;
+        data.xpToNextLevel = xpToNextLevel;
+        /*
+        data.permAttack = permAttack;
+        data.permMagic = permMagic;
+        data.permArmor = permArmor;
+        data.permResistance = permResistance;
+        data.permSpeed = permSpeed;
+        data.permCrit = permCrit;
+        */
+        data.usesMagic = usesMagic;
+        data.xpReward = xpReward;
+        return data;
     }
 }

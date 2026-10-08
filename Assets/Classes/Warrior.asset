@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Warrior
   m_EditorClassIdentifier: Assembly-CSharp::ClassData
   className: Warrior
-  levelCap: 0
+  levelCap: 30
+  gender: 0
   sprite: {fileID: 4495478712733764576, guid: 61437b73d86a7da4da61d85c5813c9a5, type: 3}
   skills:
+  - {fileID: 11400000, guid: daa39bf1c97387443952676b4f3673c5, type: 2}
+  - {fileID: 11400000, guid: daa39bf1c97387443952676b4f3673c5, type: 2}
   - {fileID: 11400000, guid: daa39bf1c97387443952676b4f3673c5, type: 2}
   minHP: 15
   maxHP: 25
@@ -35,11 +38,11 @@ MonoBehaviour:
   maxMagicPen: 0
   minCrit: 0
   maxCrit: 5
-  hpGrowth: 5
+  hpGrowth: 8
   attackGrowth: 2
   magicGrowth: 0
-  armorGrowth: 1
-  resistanceGrowth: 1
+  armorGrowth: 2
+  resistanceGrowth: 2
   speedGrowth: 1
   armorPenGrowth: 0
   magicPenGrowth: 0

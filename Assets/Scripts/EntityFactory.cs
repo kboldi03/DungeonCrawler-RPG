@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class EntityFactory : MonoBehaviour 
 {
-    
-    public static CharacterStats CreateCharacter(ClassData classData, GameObject prefab, int floorBonus = 0)
+    //Create characters fro the tavern
+    public static CharacterStats CreateCharacter(ClassData classData, GameObject prefab, NameDatabase nameDatabase, int floorBonus = 0)
     {
         GameObject go = Instantiate(prefab);
         CharacterStats stats = go.GetComponent<CharacterStats>();
         go.GetComponent<SpriteRenderer>().sprite = classData.sprite;
 
-        stats.characterName = classData.className;
+        stats.characterName = nameDatabase.GetRandom(classData.gender);
         stats.classData = classData;
         stats.maxHP = Random.Range(classData.minHP, classData.maxHP) + floorBonus;
         stats.currentHP = stats.maxHP;
@@ -21,6 +21,54 @@ public class EntityFactory : MonoBehaviour
         stats.armorPen = Random.Range(classData.minArmorPen, classData.maxArmorPen);
         stats.magicPen = Random.Range(classData.minMagicPen, classData.maxMagicPen);
         stats.crit = Random.Range(classData.minCrit, classData.maxCrit);
+
+        return stats;
+    }
+
+    //create characters for the fight
+    public static CharacterStats CreateFromSaveData(CharacterSaveData data, GameObject prefab, ClassData[] allClasses)
+    {
+        GameObject go = Instantiate(prefab);
+        CharacterStats stats = go.GetComponent<CharacterStats>();
+
+        stats.characterName = data.characterName;
+        stats.maxHP = data.GetFinalStat(StatType.MaxHP);
+        stats.currentHP = data.currentHP;
+        stats.attack = data.GetFinalStat(StatType.Attack);
+        stats.magic = data.GetFinalStat(StatType.Magic);
+        stats.armor = data.GetFinalStat(StatType.Armor);
+        stats.resistance = data.GetFinalStat(StatType.Resistance);
+        stats.speed = data.GetFinalStat(StatType.Speed);
+        stats.armorPen = data.GetFinalStat(StatType.ArmorPen);
+        stats.magicPen = data.GetFinalStat(StatType.MagicPen);
+        stats.crit = data.GetFinalStat(StatType.Crit);
+        stats.level = data.level;
+        stats.currentXP = data.currentXP;
+        stats.xpToNextLevel = data.xpToNextLevel;
+        /*
+        stats.permAttack = data.permAttack;
+        stats.permMagic = data.permMagic;
+        stats.permArmor = data.permArmor;
+        stats.permResistance = data.permResistance;
+        stats.permSpeed = data.permSpeed;
+        stats.permCrit = data.permCrit;
+        */
+        stats.usesMagic = data.usesMagic;
+        stats.xpReward = data.xpReward;
+
+
+        foreach (ClassData classData in allClasses)
+        {
+            if (classData.className == data.className)
+            {
+                stats.classData = classData;
+                break;
+            }
+        }
+        if (stats.classData != null)
+        {
+            go.GetComponent<SpriteRenderer>().sprite = stats.classData.sprite;
+        }
 
         return stats;
     }

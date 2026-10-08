@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0e847f8969dbce48a3c441a7caf08b7, type: 3}
+  m_Name: Archer
+  m_EditorClassIdentifier: Assembly-CSharp::ClassData
+  className: Archer
+  levelCap: 30
+  gender: 1
+  sprite: {fileID: 1783237378354427923, guid: 2674b21a10bd4cc4c8ecd8281883e169, type: 3}
+  skills:
+  - {fileID: 11400000, guid: 30fb3786c90b3674988d9f6784e05ea1, type: 2}
+  minHP: 10
+  maxHP: 20
+  minAttack: 7
+  maxAttack: 12
+  minMagic: 2
+  maxMagic: 7
+  minArmor: 0
+  maxArmor: 4
+  minResistance: 0
+  maxResistance: 4
+  minSpeed: 3
+  maxSpeed: 8
+  minArmorPen: 2
+  maxArmorPen: 4
+  minMagicPen: 0
+  maxMagicPen: 10
+  minCrit: 5
+  maxCrit: 10
+  hpGrowth: 6
+  attackGrowth: 4
+  magicGrowth: 0
+  armorGrowth: 1
+  resistanceGrowth: 1
+  speedGrowth: 2
+  armorPenGrowth: 1
+  magicPenGrowth: 0
+  critGrowth: 0
+  evolutionOptionA: {fileID: 0}
+  evolutionOptionB: {fileID: 0}
+  evolutionOptionC: {fileID: 0}
