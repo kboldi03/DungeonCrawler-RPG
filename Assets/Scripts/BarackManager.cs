@@ -19,7 +19,6 @@ public class BaracksManager : MonoBehaviour
     public Button itemSlotButton;
 
     private CharacterSaveData selectedCharacter;
-    private List<GameObject> equippedCards = new List<GameObject>();
     private List<GameObject> inventoryCards = new List<GameObject>();
 
     [Header("Display Panel")]
@@ -33,7 +32,9 @@ public class BaracksManager : MonoBehaviour
 
     public Image itemIcon;
     public TMP_Text itemNameText;
+    public TMP_Text itemDescText;
     public ItemData[] allItems;
+    public Button removeItemButton;
 
     [Header("Classes")]
     public ClassData[] allClasses;
@@ -46,10 +47,12 @@ public class BaracksManager : MonoBehaviour
         displayPanel.SetActive(false);
         inventoryPanel.SetActive(false);
         itemNameText.text = "No item equpped";
+        itemDescText.text = "";
         itemIcon.sprite = null;
 
         itemSlotButton.onClick.AddListener(OpenInventory);
         closeInventoryButton.onClick.AddListener(() => inventoryPanel.SetActive(false));
+        removeItemButton.onClick.AddListener(RemoveEquippedItem);
 
         SpawnPartyIcons();
     }
@@ -78,6 +81,14 @@ public class BaracksManager : MonoBehaviour
         selectedCharacter = data;
         displayPanel.SetActive(true);
 
+        UpdateHeader(data);
+        UpdateStats(data);
+        UpdateSkillButtons(data);
+        UpdateEquippedItem(data);
+
+    }
+    void UpdateHeader(CharacterSaveData data)
+    {
         ClassData classData = FindClassData(data.className);
 
         if (classData != null)
@@ -87,60 +98,65 @@ public class BaracksManager : MonoBehaviour
 
         nameText.text = data.characterName;
         classText.text = data.className;
+
+    }
+
+    void UpdateStats(CharacterSaveData data)
+    {
         statsText.text =
             "Level: " + data.level + "\n" +
             "Experience points: " + data.currentXP + " / " + data.xpToNextLevel + "\n" +
-            "Maximum health points: " + data.maxHP + "\n" +
-            "Attack power: " + data.attack + "\n" +
-            "Magic power: " + data.magic + "\n" +
-            "Armor: " + data.armor + "\n" +
-            "Resistance: " + data.resistance + "\n" +
-            "Speed: " + data.speed + "\n" +
-            "Critical hit chance: " + data.crit + "%" + "\n" +
-            "Armor Penetration: " + data.armorPen + "\n" +
-            "Magic Penetration: " + data.magicPen + "\n";
-        /*
-            "\n" + "Permanent Bonuses:" + "\n" +
-            "Attack power: " + data.permAttack + "\n" +
-            "Magic power: " + data.permMagic + "\n" +
-            "Armor: " + data.permArmor + "\n" +
-            "Resistance: " + data.permResistance + "\n" +
-            "Speed: " + data.permSpeed + "\n" +
-            "Critical hit chance: " + data.permCrit;
-        */
+            "Maximum health points: " + data.GetFinalStat(StatType.MaxHP) + "\n" +
+            "Current health points: " + data.currentHP + "\n" +
+            "Attack power: " + data.GetFinalStat(StatType.Attack) + "\n"  +
+            "Magic power: " + data.GetFinalStat(StatType.Magic) + "\n" +
+            "Armor: " + data.GetFinalStat(StatType.Armor) + "\n" +
+            "Resistance: " + data.GetFinalStat(StatType.Resistance) + "\n" +
+            "Speed: " + data.GetFinalStat(StatType.Speed) + "\n" +
+            "Critical hit chance: " + data.GetFinalStat(StatType.Crit) + "%" + "\n" +
+            "Armor Penetration: " + data.GetFinalStat(StatType.ArmorPen) + "\n" +
+            "Magic Penetration: " + data.GetFinalStat(StatType.MagicPen) + "\n";
+
+    }
+
+    void UpdateSkillButtons(CharacterSaveData data)
+    {
         ClearSkillButtons();
+        ClassData classData = FindClassData(data.className);
 
-        if (classData != null)
+        if (classData == null) return;
+
+        foreach (SkillData skill in classData.skills)
         {
-            foreach (SkillData skill in classData.skills)
+            GameObject btn = Instantiate(skillButtonPrefab, skillsPanel);
+            skillButtons.Add(btn);
+
+            TMP_Text[] texts = btn.GetComponentsInChildren<TMP_Text>();
+            foreach (TMP_Text text in texts)
             {
-                GameObject btn = Instantiate(skillButtonPrefab, skillsPanel);
-                skillButtons.Add(btn);
+                if (text.gameObject.name == "Skill Name")
+                    text.text = skill.skillName;
+                else if (text.gameObject.name == "Description")
+                    text.text = skill.description;
+            }
 
-                TMP_Text[] texts = btn.GetComponentsInChildren<TMP_Text>();
-                foreach (TMP_Text text in texts)
+            // set icon
+            Image[] images = btn.GetComponentsInChildren<Image>();
+            foreach (Image img in images)
+            {
+                if (img.gameObject.name == "Icon")
                 {
-                    if (text.gameObject.name == "Skill Name")
-                        text.text = skill.skillName;
-                    else if (text.gameObject.name == "Description")
-                        text.text = skill.description;
-                }
-
-                // set icon
-                Image[] images = btn.GetComponentsInChildren<Image>();
-                foreach (Image img in images)
-                {
-                    if (img.gameObject.name == "Icon")
-                    {
-                        img.sprite = skill.icon;
-                        break;
-                    }
+                    img.sprite = skill.icon;
+                    break;
                 }
             }
         }
-        ItemInstance equippedItem = data.equippedItem;
 
-        
+    }
+
+    void UpdateEquippedItem(CharacterSaveData data)
+    {
+        ItemInstance equippedItem = data.equippedItem;
         if (equippedItem != null)
         {
             ItemData itemData = FindItem(data.equippedItem.itemName);
@@ -148,11 +164,15 @@ public class BaracksManager : MonoBehaviour
                 itemIcon.sprite = itemData.icon;
 
             itemNameText.text = equippedItem.itemName;
+            itemDescText.text = BuildStatsText(equippedItem);
+            removeItemButton.gameObject.SetActive(true);
         }
         else
         {
             itemIcon.sprite = null;
             itemNameText.text = "No item equipped";
+            itemDescText.text = "";
+            removeItemButton.gameObject.SetActive(false);
         }
     }
     ItemData FindItem(string itemName)
@@ -186,20 +206,11 @@ public class BaracksManager : MonoBehaviour
 
     void RefreshInventoryDisplay()
     {
-        foreach(GameObject card in equippedCards)
-            Destroy(card);
-        equippedCards.Clear();
+        
         foreach(GameObject card in inventoryCards) 
             Destroy(card);
         inventoryCards.Clear();
 
-        if(selectedCharacter.equippedItem != null)
-        {
-            GameObject card  = CreateItemCard(selectedCharacter.equippedItem, equippedItemContainer);
-            card.GetComponentInChildren<Button>().GetComponentInChildren<TMP_Text>().text = "Remove";
-            card.GetComponentInChildren<Button>().onClick.AddListener(() => RemoveEquippedItem());
-            equippedCards.Add(card);
-        }
         foreach (ItemInstance item in GameManager.instance.inventory)
         {
             GameObject card = CreateItemCard(item, inventoryListContent);
@@ -245,7 +256,8 @@ public class BaracksManager : MonoBehaviour
         GameManager.instance.inventory.Remove(newItem);
 
         RefreshInventoryDisplay();
-        ShowMember(selectedCharacter);
+        UpdateStats(selectedCharacter);
+        UpdateEquippedItem(selectedCharacter);
     }
 
     void RemoveEquippedItem()
@@ -254,6 +266,7 @@ public class BaracksManager : MonoBehaviour
         selectedCharacter.equippedItem = null;
 
         RefreshInventoryDisplay();
-        ShowMember(selectedCharacter);
+        UpdateStats(selectedCharacter);
+        UpdateEquippedItem(selectedCharacter);
     }
 }
